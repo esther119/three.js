@@ -212,6 +212,78 @@
 
 				}
 
+				// Set angry face as default
+				// This creates an angry expression by setting morph target values
+				const setAngryFace = () => {
+					// Common morph target patterns for angry expressions
+					for ( let i = 0; i < expressions.length; i ++ ) {
+						const expression = expressions[ i ].toLowerCase();
+						
+						// Reset all to 0 first
+						face.morphTargetInfluences[ i ] = 0;
+						
+						// Set angry-related morph targets
+						if ( expression.includes( 'angry' ) || expression.includes( 'mad' ) ) {
+							face.morphTargetInfluences[ i ] = 1.0;
+						} else if ( expression.includes( 'frown' ) || expression.includes( 'scowl' ) ) {
+							face.morphTargetInfluences[ i ] = 0.8;
+						} else if ( expression.includes( 'brow' ) && ( expression.includes( 'down' ) || expression.includes( 'furrow' ) ) ) {
+							face.morphTargetInfluences[ i ] = 0.9;
+						} else if ( expression.includes( 'eyes' ) && expression.includes( 'narrow' ) ) {
+							face.morphTargetInfluences[ i ] = 0.7;
+						} else if ( expression.includes( 'happy' ) || expression.includes( 'smile' ) || expression.includes( 'joy' ) ) {
+							face.morphTargetInfluences[ i ] = 0; // Ensure happy expressions are off
+						}
+					}
+					
+					// If no specific angry morphs found, create angry look with available morphs
+					if ( !expressions.some( e => e.toLowerCase().includes( 'angry' ) || e.toLowerCase().includes( 'frown' ) ) ) {
+						// Set first morph target to create some expression (often brow-related)
+						if ( expressions.length > 0 ) face.morphTargetInfluences[ 0 ] = 0.7;
+						// Set second morph target if available (often mouth-related)
+						if ( expressions.length > 1 ) face.morphTargetInfluences[ 1 ] = 0.5;
+						// Set third morph target if available (often eye-related)  
+						if ( expressions.length > 2 ) face.morphTargetInfluences[ 2 ] = 0.3;
+					}
+				};
+
+				// Apply angry face
+				setAngryFace();
+
+				// Add preset expression buttons
+				const presetsFolder = expressionFolder.addFolder( 'Presets' );
+				
+				// Angry preset button
+				api.setAngryFace = function() {
+					setAngryFace();
+				};
+				presetsFolder.add( api, 'setAngryFace' ).name( 'Angry Face' );
+				
+				// Neutral preset button  
+				api.setNeutralFace = function() {
+					for ( let i = 0; i < expressions.length; i ++ ) {
+						face.morphTargetInfluences[ i ] = 0;
+					}
+				};
+				presetsFolder.add( api, 'setNeutralFace' ).name( 'Neutral Face' );
+				
+				// Happy preset button
+				api.setHappyFace = function() {
+					for ( let i = 0; i < expressions.length; i ++ ) {
+						const expression = expressions[ i ].toLowerCase();
+						face.morphTargetInfluences[ i ] = 0;
+						
+						if ( expression.includes( 'happy' ) || expression.includes( 'smile' ) || expression.includes( 'joy' ) ) {
+							face.morphTargetInfluences[ i ] = 0.8;
+						} else if ( expression.includes( 'brow' ) && expression.includes( 'up' ) ) {
+							face.morphTargetInfluences[ i ] = 0.5;
+						}
+					}
+				};
+				presetsFolder.add( api, 'setHappyFace' ).name( 'Happy Face' );
+				
+				presetsFolder.open();
+
 				activeAction = actions[ 'Walking' ];
 				activeAction.play();
 
