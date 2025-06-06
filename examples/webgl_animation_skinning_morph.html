@@ -212,6 +212,12 @@
 
 				}
 
+				// Initialize with sad face
+				const sadIndex = expressions.indexOf( 'Sad' );
+				if ( sadIndex !== -1 ) {
+					face.morphTargetInfluences[ sadIndex ] = 1;
+				}
+
 				activeAction = actions[ 'Walking' ];
 				activeAction.play();
 
