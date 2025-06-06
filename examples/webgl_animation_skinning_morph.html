@@ -55,7 +55,7 @@
 			let container, stats, clock, gui, mixer, actions, activeAction, previousAction;
 			let camera, scene, renderer, model, face;
 
-			const api = { state: 'Walking' };
+			const api = { state: 'Idle' };
 
 			init();
 
@@ -212,7 +212,29 @@
 
 				}
 
-				activeAction = actions[ 'Walking' ];
+				// Set initial sad expression
+				console.log( 'Available expressions:', expressions );
+				
+				// Since we have 3 morph targets according to the README, let's set them to create a sad look
+				// Without knowing the exact names, we'll set different values for each to create variety
+				if ( expressions.length >= 3 ) {
+					// First expression - could be eyebrows or mouth - set to 0.8 for strong effect
+					face.morphTargetInfluences[ 0 ] = 0.8;
+					// Second expression - set to 0.6 for medium effect
+					face.morphTargetInfluences[ 1 ] = 0.6;
+					// Third expression - set to 0.4 for subtle effect
+					face.morphTargetInfluences[ 2 ] = 0.4;
+				} else {
+					// Fallback: if there are fewer expressions, set them all to 0.7
+					for ( let i = 0; i < expressions.length; i ++ ) {
+						face.morphTargetInfluences[ i ] = 0.7;
+					}
+				}
+				
+				// Log the initial values for debugging
+				console.log( 'Initial morph target values set for sad expression' );
+
+				activeAction = actions[ 'Idle' ];
 				activeAction.play();
 
 				expressionFolder.open();
