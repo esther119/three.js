@@ -1,5 +1,7 @@
 # three.js
 
+bugbot run verbose=true
+
 [![NPM Package][npm]][npm-url]
 [![Build Size][build-size]][build-size-url]
 [![NPM Downloads][npm-downloads]][npmtrends-url]
